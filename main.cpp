@@ -55,23 +55,60 @@ void pop(SeqStack* s)
         printf("Error: Stack is empty\n");
 }
 
+double calc(double a, char b, double c)
+{
+    switch(b)
+    {
+        case '+': return a+c;
+        case '-': return a-c;
+        case '*': return a*c;
+        case '/': return a/c;
+        case '%': return a%c;
+    }
+}
+
+bool cmp(char opt1, char opt2) // opt1 < opt2
+{
+    switch(opt1)
+    {
+        case '+': return (opt2=='*' || opt2=='/' || opt2='%' || opt2=='(');
+        case '-': return (opt2=='*' || opt2=='/' || opt2='%' || opt2=='(');
+        case '*': return (opt2=='(');
+        case '/': return (opt2=='(');
+        case '%': return (opt2=='(');
+    }
+}
+
+bool isNumber(char x)
+{
+    return x>='0' && x<='9';
+}
+
 int main()
 {
     freopen("in.txt", "r", stdin);
     while(true)
     {
+        double sum = 0;
         double num;
         char oper;
-        while(scanf("%lf", &num) == 1)
+        char in;
+        int brackets = 0;
+        SeqStack operands = setStack();
+        SeqStack operators = setStack();
+        while(scanf("%c", &in) == 1)
         {
-            if(scanf("%c", &oper) == 1)
+            if(in == '=')
+                break;
+            if(isNumber(in))
+                push(operators, in-'0');
+            else
             {
-                cout << num << oper;
-                if(oper == '=')
+                if(isEmpty(operands))
+                    push(operands, in);
+                else
                 {
-                    // printf("end.");
-                    SeqStack operands = setStack();
-                    SeqStack operators = setStack();
+                    char 
                 }
             }
         }
