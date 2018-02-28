@@ -1,118 +1,217 @@
 #include <bits/stdc++.h>
 using namespace std;
+
 const int MAXLEN = 100;
+int errid = 0;
 
-union Data
-{
-    double numbers;
-    char operators;
-};
-
+template <typename T>
 struct SeqStack
 {
-    Data data[MAXLEN];
-    int top;
+	T data[MAXLEN];
+	int top;
 };
 
-SeqStack* setStack()
+template <typename T>
+SeqStack<T>* setStack()
 {
-    SeqStack* s = (SeqStack*)malloc(sizeof(SeqStack));
-    s->top = -1;
-    return s;
+	SeqStack<T>* s = (SeqStack<T>*)malloc(sizeof(SeqStack<T>));
+	s->top = -1;
+	return s;
 }
 
-bool isEmpty(SeqStack* s)
+template <typename T>
+bool isEmpty(SeqStack<T>* s)
 {
-    return s->top == -1;
+	return s->top == -1;
 }
 
-bool isFull(SeqStack* s)
+template <typename T>
+bool isFull(SeqStack<T>* s)
 {
-    return s->top == MAXLEN-1;
+	return s->top == MAXLEN-1;
 }
 
-Data getTop(SeqStack* s)
+template <typename T>
+T getTop(SeqStack<T>* s)
 {
-    if(!isFull(s) && !isEmpty(s))
-        return s->data[s->top];
-    else
-        printf("Error: Stack full or empty\n");
+	if(!isFull(s) && !isEmpty(s))
+		return s->data[s->top];
+	else
+		printf("Error: Stack full or empty\n");
 }
 
-void push(SeqStack* s, Data x)
+template <typename T>
+T getSize(SeqStack<T>* s)
 {
-    if(!isFull(s))
-        s->data[++s->top] = x;
-    else
-        printf("Error: Stack is full\n");
+	return s->top+1;
 }
 
-void pop(SeqStack* s)
+template <typename T>
+void push(SeqStack<T>* s, T x)
 {
-    if(!isEmpty(s))
-        s->top--;
-    else
-        printf("Error: Stack is empty\n");
+	cout << "pushed " << x << endl;
+	if(!isFull(s))
+		s->data[++s->top] = x;
+	else
+		printf("Error: Stack is full\n");
+}
+
+template <typename T>
+void pop(SeqStack<T>* s)
+{
+	cout << "poped " << getTop(s) << endl;
+	if(!isEmpty(s))
+		s->top--;
+	else
+		printf("Error: Stack is empty\n");
 }
 
 double calc(double a, char b, double c)
 {
-    switch(b)
-    {
-        case '+': return a+c;
-        case '-': return a-c;
-        case '*': return a*c;
-        case '/': return a/c;
-        case '%': return a%c;
-    }
+	cout << "caled " << a << b << c << endl;
+	switch(b)
+	{
+		case '+': return a+c;
+		case '-': return a-c;
+		case '*': return a*c;
+		case '/':
+		{
+			if(c == 0)
+			{
+				errid = 1;
+				return 0;
+			}
+			else
+				return a/c;
+		}
+		case '%':
+		{
+			if(a==(int)a && c==(int)c)
+				return (int)a%(int)c;
+			else
+			{
+				errid = 2;
+				return 0;
+			}
+		}
+	}
+}
+
+void err()
+{
+	char errinfo[10][1024] = {
+		"",
+		"you can not divide 0",
+		"mod is only allowed between integers"
+	};
+	printf("\nerror: %s\n", errinfo[errid]);
+	errid = 0;
 }
 
 bool cmp(char opt1, char opt2) // opt1 < opt2
 {
-    switch(opt1)
-    {
-        case '+': return (opt2=='*' || opt2=='/' || opt2='%' || opt2=='(');
-        case '-': return (opt2=='*' || opt2=='/' || opt2='%' || opt2=='(');
-        case '*': return (opt2=='(');
-        case '/': return (opt2=='(');
-        case '%': return (opt2=='(');
-    }
+	switch(opt1)
+	{
+		case '-': return (opt2=='*' || opt2=='/' || opt2=='%' || opt2=='(');
+		case '+': return (opt2=='*' || opt2=='/' || opt2=='%' || opt2=='(');
+		case '*': return (opt2=='(');
+		case '/': return (opt2=='(');
+		case '%': return (opt2=='(');
+		case '=': return 0;
+	}
 }
 
 bool isNumber(char x)
 {
-    return x>='0' && x<='9';
+	return x>='0' && x<='9';
 }
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
-    while(true)
-    {
-        double sum = 0;
-        double num;
-        char oper;
-        char in;
-        int brackets = 0;
-        SeqStack operands = setStack();
-        SeqStack operators = setStack();
-        while(scanf("%c", &in) == 1)
-        {
-            if(in == '=')
-                break;
-            if(isNumber(in))
-                push(operators, in-'0');
-            else
-            {
-                if(isEmpty(operands))
-                    push(operands, in);
-                else
-                {
-                    char 
-                }
-            }
-        }
-    }
+//	freopen("in.txt", "r", stdin);
+	while(true)
+	{
+		int num1 = 0;
+		double num2 = 0;
+		int cnt = 0;
+		bool isDouble = 0;
+		char in;
+		SeqStack<int>* numbers = setStack<int>();
+		SeqStack<char>* operators = setStack<char>();
+		bool end = 0;
+		while(scanf("%c", &in) == 1 && !end)
+		{
+			if(in == '\n')
+			{
+				end = 1;
+				while(!isEmpty(operators))
+				{
+					int c = getTop(numbers);
+					pop<int>(numbers);
+					char b = getTop(operators);
+					pop<char>(operators);
+					int a = getTop(numbers);
+					pop<int>(numbers);
+					double result = calc(a, b, c);
+					if(!errid)
+						push<int>(numbers, result);
+					else
+						break;
+				}
+			}
+			if(end)
+				break;
+			if(in == '=' && getSize(numbers) == 1)
+				end = 1;
+			if(isNumber(in))
+			{
+				if(!isDouble)
+				{
+					num1 *= 10;
+					num1 += in-'0';
+				}
+				else	
+				{
+					cnt++;
+					num2 += pow((in-'0'),(-cnt));
+				}
+			}
+			else if(in == '.')
+				isDouble = 1;
+			else
+			{
+				push<int>(numbers, (double)num1+num2);
+				num1 = 0;
+				num2 = 0;
+				cnt = 0;
+				isDouble = 0;
+				if(isEmpty(operators))
+					push<char>(operators, in);
+				else if(cmp(getTop(operators), in))
+					push<char>(operators, in);
+				else
+				{
+					int c = getTop(numbers);
+					pop<int>(numbers);
+					char b = getTop(operators);
+					pop<char>(operators);
+					int a = getTop(numbers);
+					pop<int>(numbers);
+					double result = calc(a, b, c);
+					if(in != '=')
+						push(operators, in);
+					if(!errid)
+						push<int>(numbers, result);
+					else
+						break;
+				}
+			}
+		}
+		if(errid)
+			err();
+		else
+			cout << getTop(numbers) << endl;
+	}
 
-    return 0;
+	return 0;
 }
