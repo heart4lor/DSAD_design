@@ -1,11 +1,2 @@
-language: cpp
-
-script: g++ main.cpp -o main.exe
-
-deploy:
-  provider: releases
-  api_key: "a59b43759f4f8b221a54a22922ecf1de08f1a0e7"
-  file: "main.exe"
-  skip_cleanup: true
-  on:
-    tags: true
+language: cpp,
+script: g++ main.cpp
