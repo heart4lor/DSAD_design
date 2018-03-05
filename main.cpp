@@ -49,7 +49,7 @@ T getSize(SeqStack<T>* s)
 template <typename T>
 void push(SeqStack<T>* s, T x)
 {
-	cout << "pushed " << x << endl;
+//	cout << "pushed " << x << endl;
 	if(!isFull(s))
 		s->data[++s->top] = x;
 	else
@@ -59,7 +59,7 @@ void push(SeqStack<T>* s, T x)
 template <typename T>
 void pop(SeqStack<T>* s)
 {
-	cout << "poped " << getTop(s) << endl;
+//	cout << "poped " << getTop(s) << endl;
 	if(!isEmpty(s))
 		s->top--;
 	else
@@ -68,7 +68,7 @@ void pop(SeqStack<T>* s)
 
 double calc(double a, char b, double c)
 {
-	cout << "caled " << a << b << c << endl;
+//	cout << "caled " << a << b << c << endl;
 	switch(b)
 	{
 		case '+': return a+c;
@@ -112,8 +112,8 @@ bool cmp(char opt1, char opt2) // opt1 < opt2
 {
 	switch(opt1)
 	{
-		case '-': return (opt2=='*' || opt2=='/' || opt2=='%' || opt2=='(');
 		case '+': return (opt2=='*' || opt2=='/' || opt2=='%' || opt2=='(');
+		case '-': return (opt2=='*' || opt2=='/' || opt2=='%' || opt2=='(');
 		case '*': return (opt2=='(');
 		case '/': return (opt2=='(');
 		case '%': return (opt2=='(');
@@ -136,33 +136,34 @@ int main()
 		int cnt = 0;
 		bool isDouble = 0;
 		char in;
-		SeqStack<int>* numbers = setStack<int>();
+		SeqStack<double>* numbers = setStack<double>();
 		SeqStack<char>* operators = setStack<char>();
 		bool end = 0;
 		while(scanf("%c", &in) == 1 && !end)
 		{
-			if(in == '\n')
+			if(in == '=')
 			{
-				end = 1;
-				while(!isEmpty(operators))
+				while(getSize(numbers)!=1 && getSize(operators)!=0)
 				{
-					int c = getTop(numbers);
-					pop<int>(numbers);
+					double c = getTop(numbers);
+					pop<double>(numbers);
 					char b = getTop(operators);
+					while(b == '(' || b == ')')
+					{
+						pop<char>(operators);
+						b = getTop(operators);
+					}
 					pop<char>(operators);
-					int a = getTop(numbers);
-					pop<int>(numbers);
+					double a = getTop(numbers);
+					pop<double>(numbers);
 					double result = calc(a, b, c);
 					if(!errid)
-						push<int>(numbers, result);
+						push<double>(numbers, result);
 					else
 						break;
 				}
-			}
-			if(end)
-				break;
-			if(in == '=' && getSize(numbers) == 1)
 				end = 1;
+			}
 			if(isNumber(in))
 			{
 				if(!isDouble)
@@ -173,35 +174,42 @@ int main()
 				else	
 				{
 					cnt++;
-					num2 += pow((in-'0'),(-cnt));
+					num2 += 1.0*(in-'0')/(pow(10,cnt));
 				}
 			}
 			else if(in == '.')
 				isDouble = 1;
 			else
 			{
-				push<int>(numbers, (double)num1+num2);
+				double sum = (double)num1 + num2;
+				if(sum != 0)
+					push<double>(numbers, (double)num1+num2);
 				num1 = 0;
 				num2 = 0;
 				cnt = 0;
 				isDouble = 0;
-				if(isEmpty(operators))
+				if(isEmpty(operators) && in!='(' && in!=')')
 					push<char>(operators, in);
 				else if(cmp(getTop(operators), in))
 					push<char>(operators, in);
 				else
 				{
-					int c = getTop(numbers);
-					pop<int>(numbers);
+					double c = getTop(numbers);
+					pop<double>(numbers);
 					char b = getTop(operators);
+					while(b == '(' || b == ')')
+					{
+						pop<char>(operators);
+						b = getTop(operators);
+					}
 					pop<char>(operators);
-					int a = getTop(numbers);
-					pop<int>(numbers);
+					double a = getTop(numbers);
+					pop<double>(numbers);
 					double result = calc(a, b, c);
-					if(in != '=')
+					if(in!='=' && in!='(' && in!=')')
 						push(operators, in);
 					if(!errid)
-						push<int>(numbers, result);
+						push<double>(numbers, result);
 					else
 						break;
 				}
