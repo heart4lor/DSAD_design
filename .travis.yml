@@ -1,2 +1,2 @@
-language: cpp,
-script: g++ main.cpp
+language: cpp
+script: g++ main.cpp -o main.exe
