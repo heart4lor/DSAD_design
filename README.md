@@ -1,6 +1,7 @@
 # 数据结构课程设计报告
 
-*author: syf* ![build status](https://travis-ci.org/heart4lor/DSAD_design.svg?branch=master)
+*author: syf*  
+![build status](https://travis-ci.org/heart4lor/DSAD_design.svg?branch=master)
 
 ## 题目：**算术表达式的求解**
 
