@@ -104,7 +104,7 @@ void err()
 		"you can not divide 0",
 		"mod is only allowed between integers"
 	};
-	printf("\nerror: %s\n", errinfo[errid]);
+	printf("error: %s\n\n", errinfo[errid]);
 	errid = 0;
 }
 
@@ -139,8 +139,11 @@ int main()
 		SeqStack<double>* numbers = setStack<double>();
 		SeqStack<char>* operators = setStack<char>();
 		bool end = 0;
+		bool isZero = 0;
 		while(scanf("%c", &in) == 1 && !end)
 		{
+			if(in == '0')
+				isZero = 1;
 			if(in == '=')
 			{
 				while(getSize(numbers)!=1 && getSize(operators)!=0)
@@ -182,12 +185,13 @@ int main()
 			else
 			{
 				double sum = (double)num1 + num2;
-				if(sum != 0)
+				if(sum || isZero)
 					push<double>(numbers, (double)num1+num2);
 				num1 = 0;
 				num2 = 0;
 				cnt = 0;
 				isDouble = 0;
+				isZero = 0;
 				if(isEmpty(operators) && in!='(' && in!=')')
 					push<char>(operators, in);
 				else if(cmp(getTop(operators), in))
